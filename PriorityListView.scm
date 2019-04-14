@@ -16,6 +16,8 @@ typeHeaders
 	SPriorityListView subclassOf SPriorityList transient, sharedTransientAllowed, transientAllowed, subclassSharedTransientAllowed, subclassTransientAllowed, number = 2057;
 	Calendar subclassOf Form transient, transientAllowed, subclassTransientAllowed, number = 2070;
 	EventDetails subclassOf Form transient, transientAllowed, subclassTransientAllowed, highestOrdinal = 30, number = 2068;
+	EventAdd subclassOf EventDetails transient, transientAllowed, subclassTransientAllowed, number = 2072;
+	EventEdit subclassOf EventDetails transient, transientAllowed, subclassTransientAllowed, number = 2073;
 	EventList subclassOf Form transient, transientAllowed, subclassTransientAllowed, number = 2071;
 	MainMenu subclassOf Form transient, transientAllowed, subclassTransientAllowed, highestOrdinal = 4, number = 2061;
  
@@ -46,13 +48,15 @@ typeDefinitions
  
 	jadeMethodDefinitions
 		runAddForm() number = 1002;
-		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:12:29:14.707;
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:14:42:52.970;
 		runCalendarDisplay() number = 1003;
-		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:12:29:20.123;
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:14:43:51.343;
 		runEditForm() number = 1004;
-		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:12:38:31.664;
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:14:43:35.431;
+		runForm(form: Form) number = 1005;
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:14:42:17.543;
 		runMainMenu() number = 1001;
-		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:12:40:58.386;
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:14:46:48.378;
 	)
 	Global completeDefinition
 	(
@@ -67,6 +71,13 @@ typeDefinitions
 	GPriorityListView completeDefinition
 	(
 		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:12:28:17.842;
+	)
+	JadeScript completeDefinition
+	(
+ 
+	jadeMethodDefinitions
+		runMainMenu() number = 1002;
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:14:45:30.587;
 	)
 	WebSession completeDefinition
 	(
@@ -150,6 +161,14 @@ typeDefinitions
 		txtEventType_2:                TextBox  number = 25, ordinal = 29;
 		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:13:43:13.320;
 	)
+	EventAdd completeDefinition
+	(
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:14:31:10.145;
+	)
+	EventEdit completeDefinition
+	(
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:14:31:26.166;
+	)
 	EventList completeDefinition
 	(
 		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:12:48:35.679;
@@ -169,7 +188,7 @@ typeDefinitions
  
 	jadeMethodDefinitions
 		add_click(menuItem: MenuItem input) updating, number = 1001;
-		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:12:40:31.627;
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:14:49:18.738;
  
 	eventMethodMappings
 		add_click = click of MenuItem;
@@ -200,8 +219,10 @@ runAddForm
 runAddForm();
 
 vars
+	form : EventAdd;
 
 begin
+	runForm(form);
 
 end;
 
@@ -212,8 +233,10 @@ runCalendarDisplay
 runCalendarDisplay();
 
 vars
+	form : Calendar;
 
 begin
+	runForm(form);
 
 end;
 
@@ -224,8 +247,31 @@ runEditForm
 runEditForm();
 
 vars
+	form : EventEdit;
 
 begin
+
+	runForm(form);
+	
+end;
+
+}
+
+runForm
+{
+runForm(form : Form);
+
+vars
+	runForm : Form;
+
+begin
+	runForm := form;
+
+	app.initialize();
+	create runForm transient;
+	runForm.show;
+	
+	app.doWindowEvents(5000);
 
 end;
 
@@ -239,9 +285,33 @@ vars
 	form: MainMenu;
 	
 begin
+	runForm(form);
+	/*
+	
 	app.initialize();
 	create form transient;
-	form.show();
+	form.show;
+	
+	app.doWindowEvents(5000);
+	*/
+	
+end;
+
+}
+
+	)
+	JadeScript (
+	jadeMethodSources
+runMainMenu
+{
+runMainMenu();
+
+vars
+	form: MainMenu;
+	
+begin
+	FormRun.runForm(form);
+	
 end;
 
 }
@@ -256,8 +326,7 @@ add_click(menuItem: MenuItem input) updating;
 vars
 	form : EventAdd;
 begin
-	create form transient;
-	form.show();
+	runForm(form);
 end;
 
 }
