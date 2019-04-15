@@ -39,7 +39,7 @@ typeDefinitions
  
 	jadeMethodDefinitions
 		createEvent() updating, number = 1001;
-		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:12:43:26.954;
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:15:54:53.387;
 		createItemsFromFile() updating, number = 1002;
 		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:12:27:39.029;
 	)
@@ -78,7 +78,7 @@ typeDefinitions
 		calcDaysUntil(): Integer number = 1002;
 		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:12:40:59.655;
 		calcDaysUntilFinal(): Integer number = 1005;
-		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:11:40:55.784;
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:15:58:23.706;
 		calcDue(): Date number = 1001;
 		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:14:23:06.288;
 		calcEffort(): Real number = 1009;
@@ -88,7 +88,7 @@ typeDefinitions
 		calcPriority(): Integer number = 1011;
 		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:14:19:15.852;
 		calcStart(): Date number = 1006;
-		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:14:34:13.903;
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:15:48:31.502;
 		calcStartDays(): Integer number = 1007;
 		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:12:44:23.265;
 		calcTime(): Integer number = 1008;
@@ -104,7 +104,7 @@ typeDefinitions
 			finalDue: Date) updating, number = 1003;
 		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:12:43:31.855;
 		getEventDetails(): String number = 1004;
-		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:11:44:28.322;
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:16:00:58.811;
 	)
 	Global completeDefinition
 	(
@@ -120,6 +120,8 @@ typeDefinitions
 	(
  
 	jadeMethodDefinitions
+		createEvent() updating, number = 1003;
+		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:15:15:55:19.155;
 		purgeTestObjects() updating, number = 1001;
 		setModifiedTimeStamp "Amemait" "18.0.01" 2019:04:12:12:27:56.719;
 	)
@@ -136,6 +138,14 @@ typeDefinitions
 	)
 	Window completeDefinition
 	(
+	)
+	Control completeDefinition
+	(
+		setModifiedTimeStamp "cnwrjd1" "9.9.00" 110516 2016:08:04:16:24:58.135;
+	)
+	Table completeDefinition
+	(
+		setModifiedTimeStamp "cnwrjd1" "9.9.00" 110516 2016:08:04:16:28:25.533;
 	)
 	Form completeDefinition
 	(
@@ -182,6 +192,15 @@ vars
 begin
 
 	app.initialize();
+	
+	read type;
+	read reward;
+	read description;
+	read effort;
+	read fun;
+	read priority;
+	read time;
+	read finalDue;
 	
 	beginTransaction;
 	
@@ -238,7 +257,7 @@ vars
 	today : Date;
 	daysUntil : Integer;
 begin
-	daysUntil := (eventCalcDue.Date - today).Integer;	
+	daysUntil := (today - eventCalcDue.Date).Integer;	
 	return daysUntil;
 end;
 }
@@ -345,6 +364,10 @@ begin
 	calculation := (calcTime() * calcEffort() * calcFun()).Integer;
 	preferredStartDate := self.eventCalcDue - calculation;
 	
+	if preferredStartDate < today then
+		preferredStartDate := today;
+	endif;
+	
 	return preferredStartDate;
 
 end;
@@ -426,7 +449,7 @@ begin
 	return self.eventType & ", with description
 	" & self.eventDescription & ".
 	Its final due date is " & self.eventFinalDue.String & ", which is " & self.eventDaysUntilFinal.String & " days away.
-	Aim to have it completed by " & self.eventCalcDue.String & ", which is " & self.eventDaysUntil.String & "days away.";
+	Aim to have it completed by " & self.eventCalcDue.String & ", which is " & self.eventDaysUntil.String & " days away.";
 
 end;
 
@@ -435,6 +458,54 @@ end;
 	)
 	JadeScript (
 	jadeMethodSources
+createEvent
+{
+createEvent() updating;
+
+vars
+	event : Event;
+	
+	finalDue : Date;
+	
+	type,
+	reward,
+	description,
+	effort,
+	fun,
+	priority,
+	time : String;
+
+begin
+
+	app.initialize();
+	
+	read type;
+	read reward;
+	read description;
+	read effort;
+	read fun;
+	read priority;
+	read time;
+	read finalDue;
+	
+	beginTransaction;
+	
+	event := create Event(type,
+						  reward,
+						  description,
+						  effort,
+						  fun,
+						  priority,
+						  time,
+						  finalDue);
+	commitTransaction;
+	
+	write "Created event for " & event.getEventDetails().String;
+
+end;
+
+}
+
 purgeTestObjects
 {
 purgeTestObjects() updating;
